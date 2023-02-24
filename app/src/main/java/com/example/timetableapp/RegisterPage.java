@@ -15,6 +15,7 @@ import android.widget.EditText;
 
 public class RegisterPage extends Activity implements OnClickListener {
     EditText Name, Email, Password;
+    DBHelper DB;
     SQLiteDatabase db;
     Button Insert;
 //    private int title;
@@ -28,25 +29,51 @@ public class RegisterPage extends Activity implements OnClickListener {
         Email= (EditText) findViewById(R.id.editTextTextPersonName2);
         Password= (EditText) findViewById(R.id.editTextTextPassword2);
         Insert= (Button) findViewById(R.id.button2);
+        DB = new DBHelper(this);
 
-        Insert.setOnClickListener(this);
+        Insert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name=Name.getText().toString();
+                String username = Email.getText().toString();
+                String pass = Password.getText().toString();
+                if(name.equals("")||username.equals("")||pass.equals(""))
+                {
+                    showMessage("Error", "Please Enter all fields");
+                }
+                else{
+                    Boolean checkmail=DB.checkemail(username);
+                    if(checkmail==false)
+                    {
+                        Boolean insert = DB.insertData(name,username,pass);
+                        if(insert==true){
+                            showMessage("Success","Registered Successfully");
+                        }
+                    }
+                }
+            }
+        });
 
-        db=openOrCreateDatabase("UserDB", Context.MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS users(name VARCHAR,email VARCHAR,password VARCHAR);");
 
-
-        }
-
-    @Override
-    public void onClick(View view) {
-        if (Name.getText().length() == 0 || Email.getText().length() == 0 || Password.getText().length() == 0) {
-            showMessage("Error", "Please enter all values");
-            return;
-        }
-        db.execSQL("INSERT INTO users VALUES (' " + Name.getText() + "' , '" + Email.getText() + "','" + Password.getText() + "');");
-        showMessage("Success", "Registered Successfully");
-        clearText();
     }
+
+//        db=openOrCreateDatabase("UserDB", Context.MODE_PRIVATE, null);
+//        db.execSQL("CREATE TABLE IF NOT EXISTS users(name VARCHAR,email VARCHAR,password VARCHAR);");
+//
+//
+//        return false;
+//    }
+//
+//    @Override
+//    public void onClick(View view) {
+//        if (Name.getText().length() == 0 || Email.getText().length() == 0 || Password.getText().length() == 0) {
+//            showMessage("Error", "Please enter all values");
+//            return;
+//        }
+//        db.execSQL("INSERT INTO users VALUES (' " + Name.getText() + "' , '" + Email.getText() + "','" + Password.getText() + "');");
+//        showMessage("Success", "Registered Successfully");
+//        clearText();
+//    }
 
     private void clearText() {
         Name.setText("");
@@ -54,11 +81,16 @@ public class RegisterPage extends Activity implements OnClickListener {
         Password.setText("");
     }
 
-    private void showMessage(String title, String message) {
+    void showMessage(String title, String message) {
         Builder builder=new Builder(this);
         builder.setCancelable(true);
         builder.setTitle(title);
         builder.setMessage(message);
         builder.show();
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

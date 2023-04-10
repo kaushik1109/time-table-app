@@ -1,7 +1,5 @@
 package com.example.timetableapp;
 
-import static android.content.ContentValues.*;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,6 +13,9 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, "Login.db", null, 1);
     }
 
+//    public DBHelper(ExampleDialog exampleDialog) {
+//        super(context, "Login.db", null, 1);
+//    }
 
 
     @Override
@@ -59,6 +60,26 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         else return false;
     }
+
+    public void onCreateActivity(SQLiteDatabase MyDB) {
+        MyDB.execSQL("CREATE TABLE IF NOT EXISTS activity(email VARCHAR,password VARCHAR,activity VARCHAR, time TIMESTAMP);");
+    }
+    public void onUpgradeactivity(SQLiteDatabase MyDB, int i, int i1) {
+        MyDB.execSQL("DROP TABLE IF EXISTS activity");
+    }
+    public Boolean insertActivity(String email, String password, String activity, String time)
+    {
+        SQLiteDatabase MYyDB=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("email",email);
+        contentValues.put("password",password);
+        contentValues.put("activity",activity);
+        contentValues.put("time",time);
+        long result = MYyDB.insert("activity",null, contentValues);
+        if(result==-1) return false;
+        else return true;
+    }
+
 
 
 }

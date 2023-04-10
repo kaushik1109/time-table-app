@@ -24,7 +24,8 @@ private Button button;
     }
 
     public void openDialog(){
-
+        ExampleDialog exampledialog =new ExampleDialog();
+        exampledialog.show(getSupportFragmentManager(),"example dialog");
     }
 
 }
